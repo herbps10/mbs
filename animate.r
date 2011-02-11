@@ -1,9 +1,3 @@
-source("/home/hps1/vaccines/vaccinations.r")
-source("/home/hps1/vaccines/parameters.r")
-
-# This will overwrite the default parameters with command line arguments
-source("/home/hps1/vaccines/getopt.r")
-
 library(animation)
 
 g = initGraph()

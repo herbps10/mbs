@@ -7,7 +7,7 @@ require 'erb'
 require 'haml'
 
 def rScript(name)
-	return '/home/herb/Dropbox/School/Freshmen/Spring/Modeling-Biological-Systems/vaccines/' + name
+	return '/home/hps1/vaccines/' + name
 end
 
 helpers do
@@ -32,8 +32,8 @@ $inputs = [
 	Input.new("populationsize", "Population Size", "text", 100),
 	Input.new("infectious", "Initial Infectious", "text", 1),
 	Input.new("unvaccinated", "Initial Unvaccinated", "text", 20),
-	Input.new("animationframes", "Number of Animation Frames", "text", 100),
-	Input.new("animation", "Make Animation", "checkbox", true, false),
+	Input.new("frames", "Number of Animation Frames", "text", 100),
+	Input.new("animation", "Make Animation", "checkbox", true),
 	Input.new("datafile", "Make Data File", "checkbox", true)
 ]
 
@@ -45,20 +45,23 @@ end
 
 get '/generate' do
 
-	rpath = rScript("animate.r")
+	rpath = rScript("web.r")
 
 	$inputs.each do |input|
 		next if input.rparameter == false
 
 		val = params[input.name]
-		val = "off" if val == nil
+		val = "" if val == "on" or val == nil
 
 		rpath += " --" + input.name + " " + val
 	end
 
 	rpath
 
+
 	system("Rscript " + rpath)
+
+	rpath	
 
 	#haml :generate
 end
