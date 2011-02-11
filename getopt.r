@@ -5,7 +5,7 @@ opt <- getopt(c(
 	"unvaccinated", "u", 1, "integer", 
 	"infectious", "i", 1, "integer", 
 	"animationframes", "f", 1, "integer",
-	"animation", "d", 0, "logical",
+	"animation", "a", 0, "logical",
 	"datafile", "d", 0, "logical"
 ))
 
