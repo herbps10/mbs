@@ -1,8 +1,8 @@
-source("/home/herb/Dropbox/School/Freshmen/Spring/Modeling-Biological-Systems/vaccines/vaccinations.r")
-source("/home/herb/Dropbox/School/Freshmen/Spring/Modeling-Biological-Systems/vaccines/parameters.r")
+source("/home/hps1/vaccines/vaccinations.r")
+source("/home/hps1/vaccines/parameters.r")
 
 # This will overwrite the default parameters with command line arguments
-source("/home/herb/Dropbox/School/Freshmen/Spring/Modeling-Biological-Systems/vaccines/getopt.r")
+source("/home/hps1/vaccines/getopt.r")
 
 library(animation)
 
