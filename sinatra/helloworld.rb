@@ -44,8 +44,7 @@ get '/' do
 end
 
 get '/generate' do
-
-	rpath = rScript("web.r")
+	@rpath = rScript("web.r")
 
 	$inputs.each do |input|
 		next if input.rparameter == false
@@ -53,15 +52,8 @@ get '/generate' do
 		val = params[input.name]
 		val = "" if val == "on" or val == nil
 
-		rpath += " --" + input.name + " " + val
+		@rpath += " --" + input.name + " " + val
 	end
 
-	rpath
-
-
-	system("Rscript " + rpath)
-
-	rpath	
-
-	#haml :generate
+	haml :generate
 end
