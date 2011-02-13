@@ -1,6 +1,6 @@
 library(igraph)
 
-g = barabasi.game(500, directed = F)
+g = barabasi.game(1000, directed = F)
 #g = erdos.renyi.game(1000, 0.75);
 
 for(i in seq(1:10)) {
@@ -12,7 +12,7 @@ g_clusters = clusters(g)
 
 newgraph = add.edges(g, c())
 to_delete = c()
-for(i in which(g_clusters$csize < 10)) {
+for(i in which(g_clusters$csize < 15)) {
 	to_delete = append(to_delete, which(g_clusters$membership == (i - 1)) - 1)
 }
 newgraph = delete.vertices(newgraph, to_delete)
