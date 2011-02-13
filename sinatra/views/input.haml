@@ -1,5 +1,5 @@
 %label= input.label
 - if input.type == "text"
-	%input{:name => input.name, :value => input.value, :type => "text"}
+	%input{:name => "generate[" + input.name + "]", :value => input.value, :type => "text"}
 - else input.type == "checkbox"
-	%input{:name => input.name, :checked => input.value, :type => "checkbox"}
+	%input{:name => "generate[" + input.name + "]", :checked => input.value, :type => "checkbox"}

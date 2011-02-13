@@ -1,3 +1,7 @@
+body {
+	font-family: sans-serif;
+}
+
 #content {
 	width: 750px;
 	margin: auto;
@@ -9,8 +13,6 @@ label {
 }
 
 div#forminput {
-	border: 1px solid #AAA;
-	border-top: none;
 	margin-bottom: 20px;
 }
 
@@ -18,15 +20,33 @@ div.input {
 	padding: 10px 5px;
 }
 
-div.input.odd {
-	background: #eee;
-}
-
-div.input.even {
-	border-top: 1px solid #AAA;
-	border-bottom: 1px solid #AAA;
+div.inputgroup {
+	margin-bottom: 50px;
 }
 
 input.integer {
 	border: 1px solid gray;
+}
+
+.generate {
+	height: 20px;
+	width: 100%;
+	border: 1px solid gray;
+	padding: 1px;
+	margin: 10px 0;
+}
+
+.progress {
+	height: 20px;
+	width: 0px;
+	background: red;
+}
+
+a.view {
+	display: none;
+}
+
+h2.textprogress {
+	width: 100%;
+	text-align: center;
 }

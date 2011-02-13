@@ -1,17 +1,11 @@
 %h2 MBS Model Home
 
-%form{:action => "/generate"}
-	%div#forminput
-		- counter = 0
-		- @inputs.each do |input|
-			- name = "generate[" + input.name + "]"
-			- if counter % 2 == 0
-				%div.input.even
-					= inputPartial(input) 
-			- else
-				%div.input.odd
-					= inputPartial(input)
-			- counter += 1
-	%input{:type => "submit", :value => "Generate Animation"}
+%p
+	%a{:href => "/mbs/one"} Generate One Simulation
 
-%a{:href => "animation/index.html"} view animation &raquo;
+%p
+	%a{:href => "/mbs/many"} Generate Many simulations
+
+
+%p
+	%a{:href => "/mbs/animation/index.html"} view current animation &raquo;

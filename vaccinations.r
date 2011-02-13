@@ -3,31 +3,6 @@
 
 library(igraph)
 
-initGraph <- function() {
-	g <- barabasi.game(POPULATION_SIZE, 1, directed = F)
-	g <- set.vertex.attribute(g, "vaccinated", value="V")
-	g <- set.vertex.attribute(g, "disease", value="S")
-	g <- set.vertex.attribute(g, "time", value=0)
-
-	V(g)$color <- "white"
-
-	unvaccinated = sample(1:length(V(g))-1, NUMBER_UNVACCINATED)
-
-	for(i in unvaccinated) {
-		g <- set.vertex.attribute(g, "vaccinated", index = i, value="U")
-	}
-
-	initial_infected = sample(1:length(V(g))-1, NUMBER_INFECTIOUS)
-	for(i in initial_infected) {
-		g <- set.vertex.attribute(g, "disease", index = i, value = "I")
-		g <- set.vertex.attribute(g, "time", index = i, value=0)
-
-		V(g)[i]$color <- "red"
-	}
-
-	return(g)
-}
-
 timeStep <- function(population) {
 	newgraph = add.edges(population, c()) # Make a copy of population
 	
@@ -48,28 +23,30 @@ timeStep <- function(population) {
 				V(newgraph)[i]$color = "blue" # Change the color to blue
 			}
 			else {
-				for(n in neighbors(population, i)) {
-					if(V(population)[n]$vaccinated == "V") {
-						# Have a 33% chance that the vaccinated individual will still catch the disease
-						if(sample(c(1, 3), 1) == 1) {
+				if(time > TIME_TO_INFECT) {
+					for(n in neighbors(population, i)) {
+						if(V(population)[n]$vaccinated == "V") {
+							# Have a 33% chance that the vaccinated individual will still catch the disease
+							if(sample(c(1, 3), 1) == 1) {
+								next
+							}
+						}
+
+						if(V(population)[n]$disease == "R") {
 							next
 						}
-					}
 
-					if(V(population)[n]$disease == "R") {
-						next
-					}
-
-					if(V(population)[n]$disease == "S") {
-						V(newgraph)[n]$color = "red"
-						newgraph = set.vertex.attribute(newgraph, "disease", index = n, value = "I")
-						newgraph = set.vertex.attribute(newgraph, "time", index = n, value = 0)
+						if(V(population)[n]$disease == "S") {
+							V(newgraph)[n]$color = "red"
+							newgraph = set.vertex.attribute(newgraph, "disease", index = n, value = "I")
+							newgraph = set.vertex.attribute(newgraph, "time", index = n, value = 0)
+						}
 					}
 				}
 			}
 
 			# Update the color
-			infectionColors = heat.colors(30) # Multiply by 10 so we only get the redder colors
+			infectionColors = heat.colors(10 * LENGTH_OF_RECOVERY) # Multiply by 10 so we only get the redder colors
 			V(newgraph)[i]$color = infectionColors[time + 1]
 		}
 		else if(diseaseState == "R") {

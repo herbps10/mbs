@@ -1,9 +1,9 @@
 %html
 	%head
 		%title MBS Model
-		%link{:rel => 'stylesheet', :href => '/styles.css', :type =>'text/css'}
-		%script{:src => "/jquery.js", :type => "text/javascript"}
-		%script{:src => "/script.js", :type => "text/javascript"}
-	%body
+		%link{:rel => 'stylesheet', :href => '/mbs/styles.css', :type =>'text/css'}
+		%script{:src => "/mbs/jquery.js", :type => "text/javascript"}
+		%script{:src => "/mbs/script.js", :type => "text/javascript"}
+	%body{:id => @view}
 		#content
 			= yield

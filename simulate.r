@@ -6,7 +6,6 @@ g = initGraph()
 
 cat("\tS\tI\tR\n", file=dataPath)
 
-
 for(simulation in c(1:SIMULATION_REPEAT)) {
 	for(frame in c(1:SIMULATION_LENGTH)) {
 		# Count the number in each state

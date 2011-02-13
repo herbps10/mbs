@@ -1,6 +1,6 @@
 %h2 Generate One Simulation
 
-%form{:action => "/mbs/generate"}
+%form{:action => "/mbs/generate", :method => "post"}
 	%div#forminput
 		%div.inputgroup
 			%div.input
@@ -26,9 +26,9 @@
 
 			%div.input
 				%label Graph Generator
-				%select
-					%option barabasi.r
-					%option barabasi_custom.r
+				%select{:name => "generate[graph]"}
+					- @graphGenerators.each do |name|
+						%option{:value => name}= File.basename(name)
 				
 		%div.inputgroup
 			%div.input
