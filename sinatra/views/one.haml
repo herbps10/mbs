@@ -1,0 +1,40 @@
+%h2 Generate One Simulation
+
+%form{:action => "/mbs/generate"}
+	%div#forminput
+		%div.inputgroup
+			%div.input
+				= inputPartial(@inputs["populationsize"])
+
+			%div.input
+				=inputPartial(@inputs["infectious"])
+
+			%div.input
+				= inputPartial(@inputs["unvaccinated"])
+				
+			%div.input
+				=inputPartial(@inputs["infectionlength"])
+
+			%div.input
+				= inputPartial(@inputs["recoverylength"])
+
+			%div.input
+				=inputPartial(@inputs["timetoinfect"])
+
+			%div.input
+				= inputPartial(@inputs["frames"])
+
+			%div.input
+				%label Graph Generator
+				%select
+					%option barabasi.r
+					%option barabasi_custom.r
+				
+		%div.inputgroup
+			%div.input
+				=inputPartial(@inputs["animation"])
+			%div.input
+				= inputPartial(@inputs["datafile"])
+	%input{:type => "submit", :value => "Generate"}
+
+
