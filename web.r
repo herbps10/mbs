@@ -1,3 +1,9 @@
+# ------------------------ web.r ------------------------ #
+# 							  #
+# This file is used by sinatra to run simulations.        #
+#							  #
+# ------------------------------------------------------- #
+
 # Load the core script
 source("/home/hps1/vaccines/vaccinations.r")
 
@@ -11,5 +17,5 @@ source("/home/hps1/vaccines/getopt.r")
 source(GRAPH_GENERATOR)
 
 if(CREATE_ANIMATION == T) {
-	source("/home/hps1/vaccines/animate.r")
+	source("/home/hps1/vaccines/one.r")
 }

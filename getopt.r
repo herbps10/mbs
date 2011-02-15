@@ -1,3 +1,14 @@
+# --------------------------- get.r ------------------------------ #
+# 								   #
+# This file handles parsing parameters from the command line. 	   #
+#								   #
+# Sinatra uses command line arguments to set the model parameters. #
+# It would be really cumbersome to set all these arguments	   #
+# manually on the command line. Setup your parameters in the       #
+# parameters.r file instead.					   #
+#							   	   #
+# ---------------------------------------------------------------- #
+
 library(getopt)
 
 opt <- getopt(c(

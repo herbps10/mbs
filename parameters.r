@@ -1,3 +1,14 @@
+# -------------- parameters.r ---------------- #
+# 					       #
+# This file initializes the parameters	       #
+# for the model. 			       #
+# 					       #
+# You can load this file then use getopt.r     #
+# To overwrite some of the parameters with     #
+# command line arguments.		       #
+#					       #
+# -------------------------------------------- #
+
 # General configuration
 POPULATION_SIZE = 50
 NUMBER_UNVACCINATED = 10 # The amount of people that start as being unvaccinated
