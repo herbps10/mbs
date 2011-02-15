@@ -14,7 +14,7 @@ GRAPH_GENERATOR = "/home/hps1/vaccines/graph_generators/barabasi.r"
 # Used for configuring the animation
 #ANIMATION_OUTPUT = "/home/herb/Dropbox/School/Freshmen/Spring/Modeling-Biological-Systems/vaccines/sinatra/public/animation/"
 ANIMATION_OUTPUT = "/home/hps1/vaccines/sinatra/public/animation/"
-ANIMATION_FRAMES = 100
+ANIMATION_FRAMES = 30
 ANIMATION_OUTPUT_DATA = F
 
 # Used for configuring data collection

@@ -46,15 +46,17 @@ timeStep <- function(population) {
 			}
 
 			# Update the color
-			infectionColors = heat.colors(10 * LENGTH_OF_RECOVERY) # Multiply by 10 so we only get the redder colors
+			infectionColors = heat.colors(10 * LENGTH_OF_INFECTION) # Multiply by 10 so we only get the redder colors
 			V(newgraph)[i]$color = infectionColors[time + 1]
 		}
 		else if(diseaseState == "R") {
 			V(newgraph)[i]$color = "blue"
-			if(time == LENGTH_OF_RECOVERY) {
-				newgraph = set.vertex.attribute(newgraph, "disease", index = i, value = "S")
-				newgraph = set.vertex.attribute(newgraph, "time", index = i, value = 0)
-				V(newgraph)[i]$color = "white"
+			if(LENGTH_OF_RECOVERY > 0) {
+				if(time == LENGTH_OF_RECOVERY) {
+					newgraph = set.vertex.attribute(newgraph, "disease", index = i, value = "S")
+					newgraph = set.vertex.attribute(newgraph, "time", index = i, value = 0)
+					V(newgraph)[i]$color = "white"
+				}
 			}
 		}
 
