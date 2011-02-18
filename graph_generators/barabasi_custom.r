@@ -26,12 +26,19 @@ initGraph <- function() {
 	to_add = c()
 	new_clusters = clusters(newgraph)
 	for(i in 0:(new_clusters$no - 1)) {
-		  # Connect some nodes within this component to create a more connected community.le.to.membership
-		  for(n in 0:20) {
-		    nodes = sample(which(new_clusters$membership == i) - 1, 2, replace=F)
+		# Connect some nodes within this component to create a more connected community.le.to.membership
+		for(n in 0:20) {
+			# Picks two node IDs from the current cluster
+			nodes = sample(which(new_clusters$membership == i) - 1, 2, replace=F)
 			  
-		    to_add = append(to_add, nodes)
-		  }
+			to_add = append(to_add, nodes)
+		}
+	}
+
+	# Pick one cluster to unvaccinate
+	cluster_to_unvaccinate = sample(0:new_clusters$no - 1, 1)
+	for(node in which(new_clusters$membership == cluster_to_unvaccinate) - 1) {
+		newgraph <- set.vertex.attribute(newgraph, "vaccinated", index = node, value = "U")
 	}
 
 	newgraph = add.edges(newgraph, to_add)
@@ -59,10 +66,10 @@ initGraph <- function() {
 	}
 
 	# Set up initial unvaccinated
-	unvaccinated = sample(1:length(V(newgraph))-1, NUMBER_UNVACCINATED)
-	for(i in unvaccinated) {
-		newgraph <- set.vertex.attribute(newgraph, "vaccinated", index = i, value = "U")
-	}
+	#unvaccinated = sample(1:length(V(newgraph))-1, NUMBER_UNVACCINATED)
+	#for(i in unvaccinated) {
+		#newgraph <- set.vertex.attribute(newgraph, "vaccinated", index = i, value = "U")
+	#}
 
 	# Set up initial infected
 	initial_infected = sample(1:length(V(newgraph))-1, NUMBER_INFECTIOUS)
