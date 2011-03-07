@@ -34,7 +34,7 @@ ANIMATION_OUTPUT_DATA = F
 # Used for configuring data collection
 SIMULATION_OUTPUT_DATA = F
 SIMULATION_LENGTH = 50 # How long the simulation should run
-SIMULATION_REPEAT = 50 # How many times to repeat the simulation
+SIMULATION_REPEAT = 20 # How many times to repeat the simulation
 
-POWERS = 1#seq(0.0, 2.0, by = 0.5)
-EDGES = seq(1, 2, by=1)
+POWERS = seq(0.0, 2.0, by = 0.5)
+EDGES = 1#seq(1, 2, by=1)

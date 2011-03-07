@@ -1,5 +1,5 @@
-initGraph <- function(power, edges) {
-	g <- barabasi.game(POPULATION_SIZE, power, edges, directed = F)
+initGraph <- function(p, e) {
+	g <- barabasi.game(POPULATION_SIZE, power=p, m = e, directed = F)
 	g <- set.vertex.attribute(g, "state", value = "SUSCEPTIBLE")
 	g <- set.vertex.attribute(g, "time", value = 0)
 

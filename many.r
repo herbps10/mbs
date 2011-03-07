@@ -22,6 +22,7 @@ write.table(c(
 		LENGTH_OF_ACUTE,
 		ACUTE_TO_CHRONIC,
 		BETA_SUSCEPTIBLE,
+		SIMULATION_REPEAT,
 		""
 	),
 	"averages.csv",
@@ -35,10 +36,12 @@ write.table(c(
 		"Length of Acute",
 		"Acute to Chronic",
 		"Beta Susceptible",
+		"Simulation Repeat",
 		""
 	)
 )
 
+counter = 0
 for(power in POWERS) {
 	for(edge in EDGES) {
 		all.max.infected = c()
@@ -57,7 +60,7 @@ for(power in POWERS) {
 		all.frame = c() # Time to all infected
 
 		for(simulation in c(1:SIMULATION_REPEAT)) {
-			g = initGraph(power, EDGES)
+			g = initGraph(power, edge)
 			susceptible = c()
 			infectious = c() # This holds the sum of acute and chronicly infected individuals
 			acute = c()
@@ -171,6 +174,7 @@ for(power in POWERS) {
 				avg.end.susceptible.percentage,
 				avg.time.of.max.change,
 				avg.max.change,
+				counter,
 				""
 			),
 			"averages.csv", 
@@ -186,12 +190,15 @@ for(power in POWERS) {
 				"End Susceptible Percentage",
 				"Time of Max Change",
 				"Max Change",
+				"Counter",
 				""
 			),
 			col.names=F, 
 			sep=";",
 			append = T
 		)
+
+		counter = counter + 1
 	}
 }
 
