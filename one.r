@@ -6,9 +6,10 @@
 # -------------------------------------------------#
 
 library(animation)
+library(igraph)
 
 # the function initGraph should come from a graph generator R file
-g = initGraph()
+g = initGraph(0.5)
 
 # Create the layout for the graph once
 lay = layout.fruchterman.reingold(g)

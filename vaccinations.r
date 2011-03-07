@@ -9,83 +9,106 @@
 
 library(igraph)
 
+# Sets the compartmental state to a given index
+setState <- function(graph, i, state) {
+	return(set.vertex.attribute(graph, "state", index = i, value = state))
+}
+
+# Resets the time of a vertex
+resetTime <- function(graph, i) {
+	return(set.vertex.attribute(graph, "time", index = i, value = 0))
+}
+
+resetRNot <- function(graph, i) {
+	return(set.vertex.attribute(graph, "RNot", index = i, value = 0))
+}
+
+incrementRNot <- function(graph, amount, i) {
+	RNot = get.vertex.attribute(graph, "RNot", index = i)
+
+	graph = set.vertex.attribute(graph, "localRNot", index = i, value = amount)
+
+	RNot = RNot + amount
+	graph = set.vertex.attribute(graph, "RNot", index = i, value = RNot)
+
+	return(graph)
+}
+
+# Sets vertex number i to given color
+setColor <- function(graph, i, color) {
+	V(graph)[i]$color = color;
+
+	return(graph)
+}
+
+# Move vertex number i to the immune state
+setImmune <- function(graph, i) {
+	graph = setState(graph, i, "IMMUNE")
+	graph = resetTime(graph, i)
+	graph = setColor(graph, i, "green")
+
+	return(graph)
+}
+
+# Move vertex number i to acute state
+setAcute <- function(graph, i) {
+	graph = setState(graph, i, "ACUTE")
+	graph = resetTime(graph, i)
+	graph = setColor(graph, i, "red")
+
+	return(graph)
+}
+
+# Move vertex i to acute state
+setChronic <- function(graph, i) {
+	graph = setState(graph, i, "CHRONIC")
+	graph = resetTime(graph, i)
+	graph = setColor(graph, i, "red")
+
+	return(graph)
+}
+
 timeStep <- function(population) {
-	newgraph = add.edges(population, c()) # Make a copy of population
+	graph = add.edges(population, c()) # Make a copy of population
+
+	V(graph)$localRNot = 0
 	
 	# Find the infected individual
 	for(i in V(population)) {
 		# Increment the time that the individual has been in its current state
-		time = get.vertex.attribute(newgraph, "time", index = i)
-		newgraph = set.vertex.attribute(newgraph, "time", index = i, value = time + 1) 
+		time = get.vertex.attribute(graph, "time", index = i)
+		graph = set.vertex.attribute(graph, "time", index = i, value = time + 1) 
 
-		diseaseState = get.vertex.attribute(population, "disease", index = i)
+		state = get.vertex.attribute(population, "state", index = i)
 
 		# Take different actions based on which state the individual is in
-		if(diseaseState == "I") {
-
-			# If the person is infected, but the infectious period is over then change the state to recovered
-			if(time == LENGTH_OF_INFECTION) {
-				newgraph = set.vertex.attribute(newgraph, "disease", index = i, value = "R") # Change the state from infected to recovered
-				newgraph = set.vertex.attribute(newgraph, "time", index = i, value = 0) # Reset the time counter to 0
-				V(newgraph)[i]$color = "blue" # Change the color to blue
-			}
-			else {
-				if(time > TIME_TO_INFECT) {
-					for(n in neighbors(population, i)) {
-						# This node will have different effects on its neighbors depending on what state each of them is in.
-						#
-						# If the neighbor is vaccinated susceptible, than the disease has a chance of spreading.
-						# If the neighbor is unvaccinated susceptible, then the disease is guarunteed to spread.
-						#
-						# If its neightbor is recovered, than the disease does not spread.
-
-						if(V(population)[n]$vaccinated == "V") {
-							# Have a 33% chance that the vaccinated individual will still catch the disease
-							if(sample(c(1, 3), 1) == 1) {
-								next
-							}
-						}
-
-						# Skip this neighbor if they are recovered
-						if(V(population)[n]$disease == "R") {
-							next
-						}
-
-						# Spread to this neighbor if they are unvaccinated susceptible
-						if(V(population)[n]$disease == "S") {
-							V(newgraph)[n]$color = "red"
-							newgraph = set.vertex.attribute(newgraph, "disease", index = n, value = "I")
-							newgraph = set.vertex.attribute(newgraph, "time", index = n, value = 0)
-						}
-					}
+		if(state == "ACUTE") {
+			# If the individual has been acutely infected for a given time, they transition to the 
+			if(time == LENGTH_OF_ACUTE) {
+				if(runif(1) < ACUTE_TO_CHRONIC) {
+					graph = setChronic(graph, i)
+				}
+				else {
+					graph = setImmune(graph, i)
 				}
 			}
-
-			# Update the color
-			infectionColors = heat.colors(10 * LENGTH_OF_INFECTION) # Multiply by 10 so we only get the redder colors
-			V(newgraph)[i]$color = infectionColors[time + 1]
-
-		}
-		else if(diseaseState == "R") {
-			V(newgraph)[i]$color = "blue"
-
-			# If LENGTH_OF_RECOVERY is set to a negative number, than this functionality is disabled.
-			if(LENGTH_OF_RECOVERY > 0) {
-
-				# If we've reached the end of the recovery period, than the individual should go back to the susceptible state
-				if(time == LENGTH_OF_RECOVERY) {
-					newgraph = set.vertex.attribute(newgraph, "disease", index = i, value = "S") # Set the disease state back to S
-					newgraph = set.vertex.attribute(newgraph, "time", index = i, value = 0) # Reset the time in current state attribute to 0
-					V(newgraph)[i]$color = "white" 
-				}
-
-			}
-
 		}
 
+		if(state == "CHRONIC" || state == "ACUTE") {
+		      # Get the susceptible neighbors
+		      allNeighbors = neighbors(population, i)
+		      susceptibleNeighbors = allNeighbors[V(g)[allNeighbors]$state == "SUSCEPTIBLE"]
+		      toInfect = susceptibleNeighbors[runif(length(susceptibleNeighbors)) < BETA_SUSCEPTIBLE]
+			
+		      graph = incrementRNot(graph, length(toInfect), i)
+		      
+		      for(n in toInfect) {
+			graph = setAcute(graph, n)
+		      }
+		}
 	}
 
-	return(newgraph)
+	return(graph)
 }
 
 #
@@ -96,7 +119,7 @@ timeStep <- function(population) {
 inDiseaseState <- function(graph, state) {
 	numState = 0
 	for(i in V(graph)) {
-		if(V(graph)[i]$disease == state) {
+		if(V(graph)[i]$state == state) {
 			numState = numState + 1
 		}
 	}
@@ -108,7 +131,7 @@ inDiseaseState <- function(graph, state) {
 #
 allInfected <- function(graph) {
   for(i in V(graph)) {
-    if(V(graph)[i]$disease == "S" || V(graph)[i] == "R") {
+    if(V(graph)[i]$state == "SUSCEPTIBLE" || V(graph)[i]$state == "IMMUNE") {
       return(F)
     }
   }
@@ -120,5 +143,28 @@ allInfected <- function(graph) {
 # Plots a graph to the screen given a layout and what timestep the graph represents.
 #
 plotGraph <- function(graph, lay, t) {
-	plot(graph, layout=lay, vertex.size = 3, vertex.label.dist = 1, vertex.label = paste(V(graph)$vaccinated), main=paste(c("Time: ", t)))
+	plot(graph, layout=lay, vertex.size = 3, vertex.label.dist = 0.5, vertex.label = paste(substr(V(graph)$state, 0, 1), V(graph)$RNot), main=paste(c("Time: ", t)))
+}
+
+RNotGraph <- function(graph) {
+	h = add.edges(graph, c())
+	lay = layout.fruchterman.reingold(h)
+
+	heatColors = rev(heat.colors(max(V(h)$RNot) + 1))
+
+	counter = 1
+	for(v in V(h)) {
+		if(V(h)[v]$RNot == 0) {
+			V(h)[v]$color = "white"
+		}
+		else {
+			V(h)[v]$color = heatColors[V(h)[v]$RNot + 1]
+		}
+	}
+
+	plot(h, layout=lay, vertex.size = (V(h)$RNot / 2) + 3, vertex.label="", vertex.label.dist=0.5)
+}
+
+avgRNot <- function(graph) {
+	
 }

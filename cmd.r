@@ -7,12 +7,12 @@
 # ------------------------------------------------------- #
 
 # Load the core script
-source("/home/hps1/vaccines/vaccinations.r")
+source("vaccinations.r")
 
 # Load default parameters
-source("/home/hps1/vaccines/parameters.r")
+source("parameters.r")
 
 # Load the graph generator
 source(GRAPH_GENERATOR)
 
-source("/home/hps1/vaccines/one.r")
+source("one.r")
