@@ -158,46 +158,37 @@ for(power in POWERS) {
 		avg.max.infected.percentage = sum(all.max.infected.percentage) / SIMULATION_REPEAT
 		avg.frame = sum(all.frame) / SIMULATION_REPEAT
 		avg.end.susceptible.percentage = sum(all.end.susceptible.percentage) / SIMULATION_REPEAT
+		avg.end.susceptible = sum(all.end.susceptible) / SIMULATION_REPEAT
 		avg.time.of.max.change = sum(all.time.of.max.change) / SIMULATION_REPEAT
 		avg.max.change = sum(all.max.change) / SIMULATION_REPEAT
 
+		write.table(c(power, edge), "averages.csv", row.names = c("Power", "Edges"), col.names = F, append = T)
 
-		write.table(c(
-				"",
-				power,
-				edge,
-				"",
-				"",
-				avg.max.infected,
-				avg.max.infected.percentage,
-				avg.frame,
-				avg.end.susceptible.percentage,
-				avg.time.of.max.change,
-				avg.max.change,
-				counter,
-				""
-			),
-			"averages.csv", 
-			row.names = c(
-				"Barabasi Parameters",
-				"Power",
-				"Edges",
-				"",
-				"Averages",
-				"Max Infected",
-				"Max Infected Percentage",
-				"Frame",
-				"End Susceptible Percentage",
-				"Time of Max Change",
-				"Max Change",
-				"Counter",
-				""
-			),
-			col.names=F, 
-			sep=";",
-			append = T
-		)
+		write.table(matrix(c("", "Average", "All Values"), ncol = 3, byrow = T), "averages.csv", row.names = F, col.names = F, append = T)
 
+		write.table(
+			matrix(c(
+				avg.max.change, all.max.change, 
+				avg.max.infected.percentage, all.max.infected.percentage,
+				avg.time.of.max.change, all.time.of.max.change, 
+				avg.max.infected, all.max.infected,
+				avg.end.susceptible, all.end.susceptible, 
+				avg.end.susceptible.percentage, all.end.susceptible.percentage, 
+				avg.frame, all.frame
+			), ncol=3, byrow=T),
+		row.names = c(
+			"Max Change",
+			"Max Infected Percentage",
+			"Time of Max Change",
+			"Max Infected",
+			"End Susceptible",
+			"End Susceptible Percentage",
+			"End Frame"
+		),
+		"averages.csv", sep=";", col.names = F, append = T)
+
+		write.table(c(""), "averages.csv", col.names = F, row.names = F, append = T)
+		
 		counter = counter + 1
 	}
 }
