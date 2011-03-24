@@ -9,56 +9,14 @@ source("parameters.r")
 source("vaccinations.r")
 source(GRAPH_GENERATOR)
 
-#dataPath = paste(c(DATA_OUTPUT, "output.dat"), sep="", collapse="")
-
-# Output the table header to the file
-#cat("\tS\tI\tR\n", file=dataPath)
-# Write the model parameters to the bottom of the file
-write.table(c(
-		"",
-		POPULATION_SIZE,
-		NUMBER_VACCINATED,
-		NUMBER_INFECTIOUS,
-		LENGTH_OF_ACUTE,
-		ACUTE_TO_CHRONIC,
-		BETA_SUSCEPTIBLE,
-		SIMULATION_REPEAT,
-		""
-	),
-	"averages.csv",
-	col.names = F,
-	sep = ";",
-	row.names = c(
-		"Model Parameters",
-		"Population Size",
-		"Vaccinated",
-		"Infectious",
-		"Length of Acute",
-		"Acute to Chronic",
-		"Beta Susceptible",
-		"Simulation Repeat",
-		""
-	)
-)
+# Truncate the data file
+write.table(
+	matrix(c("counter", "POPULATION_SIZE", "NUMBER_VACCINATED", "NUMBER_INFECTIOUS", "LENGTH_OF_ACUTE", "ACUTE_TO_CHRONIC", "BETA_SUSCEPTIBLE", "power", "edge", "VACCINATION_STRATEGY", "VACCINATION_TIME", "max.infected", "time.of.max.infected", "end.susceptible", "max.change", "time.of.max.change", "frame"), ncol=17),
+	"averages.csv", append=F, col.names = F)
 
 counter = 0
 for(power in POWERS) {
 	for(edge in EDGES) {
-		all.max.infected = c()
-		all.max.infected.percentage = c()
-
-		all.end.susceptible = c()
-		all.end.susceptible.percentage = c()
-
-		all.max.change = c()
-		all.time.of.max.change = c()
-
-		all.mean.rnot = c()
-
-		all.mean.delta.rnot = c()
-
-		all.frame = c() # Time to all infected
-
 		for(simulation in c(1:SIMULATION_REPEAT)) {
 			g = initGraph(power, edge)
 			susceptible = c()
@@ -128,17 +86,6 @@ for(power in POWERS) {
 			end.susceptible = max(tail(data.frame$susceptible, 1))
 			end.susceptible.percentage = end.susceptible/POPULATION_SIZE * 100
 
-			# Keep a list of all the values so we can average them later
-			all.max.infected = append(all.max.infected, max.infected)
-			all.max.infected.percentage = append(all.max.infected.percentage, max.infected.percentage)
-
-			all.end.susceptible = append(all.end.susceptible, end.susceptible)
-			all.end.susceptible.percentage = append(all.end.susceptible.percentage, end.susceptible.percentage)
-
-			#par(mfrow = c(1, 2))
-			#plot(y = data.frame$S, x=1:SIMULATION_LENGTH)
-			#plot(y = data.frame$I, x=1:SIMULATION_LENGTH, col="red")
-
 			data.change = data.frame(dS, dI)
 
 			# Return the max change in infectious
@@ -147,50 +94,16 @@ for(power in POWERS) {
 			# Return the time step of the first peak change value. 
 			time.of.max.change = head(seq(along=data.change$dI)[data.change$dI == max.change], 1)
 
-			all.max.change = append(all.max.change, max.change)
-			all.time.of.max.change = append(all.time.of.max.change, time.of.max.change)
+			time.of.max.infected = -1
+
+			write.table(
+				matrix(c(counter, POPULATION_SIZE, NUMBER_VACCINATED, NUMBER_INFECTIOUS, LENGTH_OF_ACUTE, ACUTE_TO_CHRONIC, BETA_SUSCEPTIBLE, power, edge, VACCINATION_STRATEGY, VACCINATION_TIME, max.infected, time.of.max.infected, end.susceptible, max.change, time.of.max.change, frame), ncol=17),
+				"averages.csv", col.names=F, append = T);
 
 			cat("Max Change", max.change, "\n")
 			cat("Time of max change: ", time.of.max.change, "\n")
 		}
 
-		avg.max.infected = sum(all.max.infected) / SIMULATION_REPEAT
-		avg.max.infected.percentage = sum(all.max.infected.percentage) / SIMULATION_REPEAT
-		avg.frame = sum(all.frame) / SIMULATION_REPEAT
-		avg.end.susceptible.percentage = sum(all.end.susceptible.percentage) / SIMULATION_REPEAT
-		avg.end.susceptible = sum(all.end.susceptible) / SIMULATION_REPEAT
-		avg.time.of.max.change = sum(all.time.of.max.change) / SIMULATION_REPEAT
-		avg.max.change = sum(all.max.change) / SIMULATION_REPEAT
-
-		write.table(c(power, edge), "averages.csv", row.names = c("Power", "Edges"), col.names = F, append = T)
-
-		write.table(matrix(c("", "Average", "All Values"), ncol = 3, byrow = T), "averages.csv", row.names = F, col.names = F, append = T)
-
-		write.table(
-			matrix(c(
-				avg.max.change, all.max.change, 
-				avg.max.infected.percentage, all.max.infected.percentage,
-				avg.time.of.max.change, all.time.of.max.change, 
-				avg.max.infected, all.max.infected,
-				avg.end.susceptible, all.end.susceptible, 
-				avg.end.susceptible.percentage, all.end.susceptible.percentage, 
-				avg.frame, all.frame
-			), ncol=3, byrow=T),
-		row.names = c(
-			"Max Change",
-			"Max Infected Percentage",
-			"Time of Max Change",
-			"Max Infected",
-			"End Susceptible",
-			"End Susceptible Percentage",
-			"End Frame"
-		),
-		"averages.csv", sep=";", col.names = F, append = T)
-
-		write.table(c(""), "averages.csv", col.names = F, row.names = F, append = T)
-		
 		counter = counter + 1
 	}
 }
-
-

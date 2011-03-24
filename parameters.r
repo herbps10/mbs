@@ -10,9 +10,9 @@
 # -------------------------------------------- #
 
 # General configuration
-POPULATION_SIZE = 300
+POPULATION_SIZE = 1000
 NUMBER_VACCINATED = 0 # The number of people to start as vaccinated
-NUMBER_INFECTIOUS = 0.05 * POPULATION_SIZE # The amount of people that start as infectious
+NUMBER_INFECTIOUS = 0.01 * POPULATION_SIZE # The amount of people that start as infectious
 LENGTH_OF_RECOVERY = 0 # Set to -1 to make permanent
 
 TIME_TO_INFECT = 0 # The number of frames to wait until the infection is spread to connecting nodes. Use this to slow down the resulting animation. Set to -1 to disable.
@@ -34,7 +34,10 @@ ANIMATION_OUTPUT_DATA = F
 # Used for configuring data collection
 SIMULATION_OUTPUT_DATA = F
 SIMULATION_LENGTH = 50 # How long the simulation should run
-SIMULATION_REPEAT = 2 # How many times to repeat the simulation
+SIMULATION_REPEAT = 10 # How many times to repeat the simulation
 
-POWERS = seq(0.0, 2.0, by = 2)
-EDGES = 1 #seq(1, 2, by=1)
+POWERS = seq(0.0, 2.0, by = 0.1)
+EDGES = seq(1, 2, by=1)
+
+VACCINATION_STRATEGY = "random"
+VACCINATION_TIME = "beginning"
